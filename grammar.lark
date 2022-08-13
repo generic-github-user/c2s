@@ -19,3 +19,8 @@ IDENTIFIER: LETTER ( LETTER | DIGIT | "_" )*
 
 literal: NUMBER | STRING
 constant: "Infinity"
+
+class: "class" IDENTIFIER block
+args: "(" (declaration (", " declaration)*)? ")"
+function: type? IDENTIFIER args block
+definition: class | function
