@@ -3,7 +3,7 @@ from lark import Lark
 from lark.indenter import Indenter
 
 with open('grammar.lark', 'r') as grammar:
-    parser = Lark(grammar.read(), parser='lalr', lexer='contextual', debug=True)
+    parser = Lark(grammar.read(), parser='earley', lexer='dynamic', debug=True)
 
 class Token:
     def __init__(self, source, parent=None):

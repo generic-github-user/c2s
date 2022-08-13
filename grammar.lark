@@ -1,3 +1,6 @@
+%ignore " " | "\n" | "\t"
+start: (statement | block)*
+
 LOWERCASE: "a".."z"
 UPPERCASE: "A".."Z"
 LETTER: LOWERCASE | UPPERCASE
@@ -43,11 +46,11 @@ while: "while" (expression | ("(" expression ")")) block
 loop: for | while
 
 comment: "//" CHARACTER*
-assignment: IDENTIFIER "=" expression
+assignment: declaration "=" expression
 goto: "goto" IDENTIFIER
 
-statement: (expression | assignment | declaration
-		| "break" | "continue" | "return" | goto) ";"
+statement: ((assignment | declaration
+		| "break" | "continue" | "return" | goto) ";") | block | definition
 block: "{" statement* "}"
 
 !binary_operator: "+" | "-" | "*" | "/" | "**" | "."
@@ -81,4 +84,3 @@ expression: (unary_operator expression) -> unary_operation
 		| loop
 		| reference | dereference
 
-start: block*
