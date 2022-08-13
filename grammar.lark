@@ -41,3 +41,30 @@ loop: for | while
 comment: "//" CHARACTER*
 assignment: IDENTIFIER "=" expression
 goto: "goto" IDENTIFIER;
+!binary_operator: "+" | "-" | "*" | "/" | "**" | "."
+		| "==" | "!=" | ">" | ">=" | "<" | "<="
+		| "|" | "&" | "^" | "<<" | ">>" | "%" | "->"
+
+!unary_operator: "!"
+assignment_operator: (unary_operator | binary_operator) "="?
+
+typeparameter: "<" (type (", " type)*)? ">"
+tuple: "(" (expression (", " expression)*)? ")"
+array: "[" ( expression [ ", " expression ] )+ "]"
+call: expression tuple
+index: expression array
+dot: expression "." IDENTIFIER
+
+reference: "&" expression
+dereference: "*" expression
+
+expression: (unary_operator expression) -> unary_operation
+		| (expression (binary_operator | assignment_operator) expression) -> binary_operation
+		//| () -> ternary_operation
+		| call | index | dot
+		| IDENTIFIER
+		| tuple | array | literal
+		| type expression
+		| "`" expression -> escaped
+		| loop
+		| reference | dereference
