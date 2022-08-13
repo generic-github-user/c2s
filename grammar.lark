@@ -1,0 +1,78 @@
+LOWERCASE: "a".."z"
+UPPERCASE: "A".."Z"
+LETTER: LOWERCASE | UPPERCASE
+
+NONZERO: "1".."9"
+DIGIT: NONZERO | "0"
+
+QUOTEMARK: "'" | "\""
+ALPHANUMERIC: LETTER | DIGIT
+CHARACTER: LETTER | DIGIT | PUNCTUATION | SYMBOL | " " | QUOTEMARK
+
+NATURAL: NONZERO DIGIT*
+INTEGER: "0" | "-"? NATURAL
+FLOAT: "-"? NATURAL? "." DIGIT+
+NUMBER: INTEGER | FLOAT
+
+STRING: "\"" (LETTER | DIGIT | PUNCTUATION | SYMBOL | " ")* "\""
+IDENTIFIER: LETTER ( LETTER | DIGIT | "_" )*
+
+literal: NUMBER | STRING
+constant: "Infinity"
+
+class: "class" IDENTIFIER block
+args: "(" (declaration (", " declaration)*)? ")"
+function: type? IDENTIFIER args block
+definition: class | function
+
+//predicate:
+type: IDENTIFIER | "auto" | "void"// | predicate
+declaration: type? IDENTIFIER
+
+if: "if" (expression | ("(" expression ")")) block
+	("else" (block | if))?
+ternary: expression "?" expression ":" expression
+match: "match" (expression | ("(" expression ")")) "{" ("case" (expression | pattern) block)* "}"
+
+for: ((assignment ";" expression ";" statement) | ("(" declaration ":" expression ")")) block
+while: "while" (expression | ("(" expression ")")) block
+loop: for | while
+
+comment: "//" CHARACTER*
+assignment: IDENTIFIER "=" expression
+goto: "goto" IDENTIFIER;
+
+statement: (expression | assignment | declaration
+		| "break" | "continue" | "return" | goto) ";"
+block: "{" statement* "}"
+
+!binary_operator: "+" | "-" | "*" | "/" | "**" | "."
+		| "==" | "!=" | ">" | ">=" | "<" | "<="
+		| "|" | "&" | "^" | "<<" | ">>" | "%" | "->"
+
+!unary_operator: "!"
+assignment_operator: (unary_operator | binary_operator) "="?
+
+typeparameter: "<" (type (", " type)*)? ">"
+tuple: "(" (expression (", " expression)*)? ")"
+array: "[" ( expression [ ", " expression ] )+ "]"
+call: expression tuple
+index: expression array
+dot: expression "." IDENTIFIER
+
+macrocall: "!!" expression
+literalblock: "'" block
+
+reference: "&" expression
+dereference: "*" expression
+
+expression: (unary_operator expression) -> unary_operation
+		| (expression (binary_operator | assignment_operator) expression) -> binary_operation
+		//| () -> ternary_operation
+		| call | index | dot
+		| IDENTIFIER
+		| tuple | array | literal
+		| type expression
+		| "`" expression -> escaped
+		| loop
+		| reference | dereference
