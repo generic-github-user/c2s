@@ -41,6 +41,11 @@ loop: for | while
 comment: "//" CHARACTER*
 assignment: IDENTIFIER "=" expression
 goto: "goto" IDENTIFIER;
+
+statement: (expression | assignment | declaration
+		| "break" | "continue" | "return" | goto) ";"
+block: "{" statement* "}"
+
 !binary_operator: "+" | "-" | "*" | "/" | "**" | "."
 		| "==" | "!=" | ">" | ">=" | "<" | "<="
 		| "|" | "&" | "^" | "<<" | ">>" | "%" | "->"
@@ -54,6 +59,9 @@ array: "[" ( expression [ ", " expression ] )+ "]"
 call: expression tuple
 index: expression array
 dot: expression "." IDENTIFIER
+
+macrocall: "!!" expression
+literalblock: "'" block
 
 reference: "&" expression
 dereference: "*" expression
