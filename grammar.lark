@@ -7,6 +7,11 @@ DIGIT: NONZERO | "0"
 
 QUOTEMARK: "'" | "\""
 ALPHANUMERIC: LETTER | DIGIT
+PAREN: "(" | ")"
+BRACKET: "[" | "]"
+PUNCTUATION: "!" | PAREN | BRACKET | "-" | "_" | ";" | ":"
+		| "`" | "," | "." | "/" | "\\" | "?" | "<" | ">"
+SYMBOL: "~" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "=" | "+"
 CHARACTER: LETTER | DIGIT | PUNCTUATION | SYMBOL | " " | QUOTEMARK
 
 NATURAL: NONZERO DIGIT*
@@ -29,10 +34,9 @@ definition: class | function
 type: IDENTIFIER | "auto" | "void"// | predicate
 declaration: type? IDENTIFIER
 
-if: "if" (expression | ("(" expression ")")) block
-	("else" (block | if))?
+if: "if" (expression | ("(" expression ")")) block ("else" (block | if))?
 ternary: expression "?" expression ":" expression
-match: "match" (expression | ("(" expression ")")) "{" ("case" (expression | pattern) block)* "}"
+match: "match" (expression | ("(" expression ")")) "{" ("case" (expression) block)* "}"
 
 for: ((assignment ";" expression ";" statement) | ("(" declaration ":" expression ")")) block
 while: "while" (expression | ("(" expression ")")) block
@@ -40,7 +44,7 @@ loop: for | while
 
 comment: "//" CHARACTER*
 assignment: IDENTIFIER "=" expression
-goto: "goto" IDENTIFIER;
+goto: "goto" IDENTIFIER
 
 statement: (expression | assignment | declaration
 		| "break" | "continue" | "return" | goto) ";"
@@ -76,3 +80,5 @@ expression: (unary_operator expression) -> unary_operation
 		| "`" expression -> escaped
 		| loop
 		| reference | dereference
+
+start: block*
