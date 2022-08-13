@@ -24,3 +24,20 @@ class: "class" IDENTIFIER block
 args: "(" (declaration (", " declaration)*)? ")"
 function: type? IDENTIFIER args block
 definition: class | function
+
+//predicate:
+type: IDENTIFIER | "auto" | "void"// | predicate
+declaration: type? IDENTIFIER
+
+if: "if" (expression | ("(" expression ")")) block
+	("else" (block | if))?
+ternary: expression "?" expression ":" expression
+match: "match" (expression | ("(" expression ")")) "{" ("case" (expression | pattern) block)* "}"
+
+for: ((assignment ";" expression ";" statement) | ("(" declaration ":" expression ")")) block
+while: "while" (expression | ("(" expression ")")) block
+loop: for | while
+
+comment: "//" CHARACTER*
+assignment: IDENTIFIER "=" expression
+goto: "goto" IDENTIFIER;
